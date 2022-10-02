@@ -1,8 +1,15 @@
-from maya import cmds , OpenMaya
+from maya import cmds, OpenMaya
 
-#name = "upperLid"
+# Property of Marco Giordano
+# the following scripts are taken from his youtube tutorial, and only slightly altered to fit the rest of the script
+
+
 def connectLocToCurve(name):
-    sel = cmds.listRelatives(f"{name}_loc_grp", c=True )
+    if cmds.checkBox('aimConstraint_checkBox', query=True, v=True):
+        sel = cmds.listRelatives(f"{name}_loc_grp", c=True)
+    else:
+        sel = cmds.listRelatives(f"{name}_jnt_grp", c=True)
+
     crv = f"{name}_linear_crv_shape"
     
     for s in sel:

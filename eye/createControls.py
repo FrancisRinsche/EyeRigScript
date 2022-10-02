@@ -1,19 +1,19 @@
 import maya.cmds as cmds
 
 
-def createControlElements(name, ctrlAmount, previousCreatedCtrls=[]):
+def createControlElements(name, ctrlAmount, vtx, previousCreatedCtrls=[]):
     def createWireDeformer(name):
         # create a wire deformer on surface1 using curve1
         cmds.wire(f"{name}_linear_crv",  w=f"{name}_cubic_crv", name=f"{name}_cubic_crv_BaseWire")
 
     def calculateControllerPositions(name, ctrlAmount):
-        locs = cmds.listRelatives(f"{name}_loc_grp", c=True)
-        marginBetweenCtrls = (len(locs) - 1) / (ctrlAmount - 1)
+        #locs = cmds.listRelatives(f"{name}_loc_grp", c=True)
+        marginBetweenCtrls = (len(vtx) - 1) / (ctrlAmount - 1)
         ctrlList = []
         for i in range(0, ctrlAmount):
             indexOfRelevantLoc = int(round(marginBetweenCtrls * i, 0))
 
-            posOfRelevantLoc = cmds.xform(locs[indexOfRelevantLoc], q=1, ws=1, t=1)
+            posOfRelevantLoc = cmds.xform(vtx[indexOfRelevantLoc], q=1, ws=1, t=1)
 
             ctrlDict = {
                 "name": f"{name}_{i}",
@@ -78,9 +78,7 @@ def createControlElements(name, ctrlAmount, previousCreatedCtrls=[]):
         # Add Attribute to main controller
         cmds.select(f"{middleElement}_main_ctrl")
         cmds.addAttr(k=True, ln='SecondaryCtrls', at='bool', dv=1)
-        cmds.addAttr(k=True, ln='SmartBlink', at='float', min=0, max=1, dv=0)
-        if len(previousCreatedCtrls) == 0:
-            cmds.addAttr(k=True, ln='SmartBlinkHeight', at='float', min=0, max=1, dv=0.2)
+
 
         # parent controller or parent constraint controller, and connect the secondary visibility attribute
         cmds.parent(f"{middleElement}_grp", f"{middleElement}_main_ctrl")
@@ -126,4 +124,5 @@ def createControlElements(name, ctrlAmount, previousCreatedCtrls=[]):
     skinCtrlJointToCurve(ctrlList, name)
 
     # giving the ctrl list and the name of the middle element back to the UI for the next use of the script
+    # the middle controller of the first use would be needed to add a smartblink height connection to both curves
     return ctrlList, indexOfMiddleListElement
