@@ -2,23 +2,23 @@ import maya.cmds as cmds
 
 
 def createStructure(name, vtx):
-
-    def creatEyeJnts(name, vtx):
+    # Property of Marco Giordano
+    # the following scripts createEyeJnts and createConstraints are taken from his youtube tutorial, and only slightly altered to fit the rest of the script
+    def createEyeJnts(name, vtx):
         cmds.group(name=f"{name}_grp", em=True)
         cmds.group(name=f"{name}_jnt_grp", em=True)
-        for i in range(0, len(vtx)):
+        for s in range(0, len(vtx)):
             cmds.select(cl=1)
-            jnt = cmds.joint(name=f"{name}_{i}_tip_BIND_jnt")
-            pos = cmds.xform(vtx[i], q=1, ws=1, t=1)
+            jnt = cmds.joint(name=f"{name}_{s}_tip_BIND_jnt")
+            pos = cmds.xform(vtx[s], q=1, ws=1, t=1)
             cmds.xform(jnt, ws=1, t=pos)
             posC = cmds.xform("center_loc", q=1, ws=1, t=1)
             cmds.select(cl=1)
-            jntC = cmds.joint(name=f"{name}_{i}_jnt")
+            jntC = cmds.joint(name=f"{name}_{s}_jnt")
             cmds.xform(jntC, ws=1, t=posC)
             cmds.parent(jnt, jntC)
             cmds.joint(jntC, e=1, oj="xyz", secondaryAxisOrient="yup", ch=1, zso=1)
-            cmds.parent(f"{name}_{i}_jnt", f"{name}_jnt_grp")
-        #cmds.setAttr(f"{name}_jnt_grp.visibility", 0)
+            cmds.parent(f"{name}_{s}_jnt", f"{name}_jnt_grp")
         cmds.parent(f"{name}_jnt_grp", f"{name}_grp")
 
     def createConstraints(name):
@@ -34,44 +34,55 @@ def createStructure(name, vtx):
                                worldUpObject="up_loc")
             cmds.parent(f"{name}_{s}_loc", f"{name}_loc_grp")
             cmds.scale(0.1, 0.1, 0.1, loc)
-        #cmds.setAttr(f"{name}_loc_grp.visibility", 0)
         cmds.parent(f"{name}_loc_grp", f"{name}_grp")
+
+    #  End of Property of Marco Giordano
+
+    def createJnts(name, vtx):
+        cmds.group(name=f"{name}_grp", em=True)
+        cmds.group(name=f"{name}_jnt_grp", em=True)
+        for s in range(0, len(vtx)):
+            cmds.select(cl=1)
+            jnt = cmds.joint(name=f"{name}_{s}_tip_BIND_jnt")
+            pos = cmds.xform(vtx[s], q=1, ws=1, t=1)
+            cmds.xform(jnt, ws=1, t=pos)
+            cmds.parent(f"{name}_{s}_tip_BIND_jnt", f"{name}_jnt_grp")
+        cmds.parent(f"{name}_jnt_grp", f"{name}_grp")
 
     def createLinCurve(name):
         cmds.group(name=f"{name}_crv_grp", em=True)
-        locs = cmds.listRelatives(f"{name}_loc_grp", c=True)
-        for s in range(0, len(locs)):
+        for s in range(0, len(vtx)):
             if s == 0:
-                pos = cmds.xform(locs[s], q=1, ws=1, t=1)
+                pos = cmds.xform(vtx[s], q=1, ws=1, t=1)
                 cmds.curve(name=f"{name}_linear_crv", d=1, p=[pos])
                 shape = cmds.listRelatives(f"{name}_linear_crv", c=True, shapes=True)
                 cmds.rename(shape, f"{name}_linear_crv_shape")
                 cmds.parent(f"{name}_linear_crv", f"{name}_crv_grp")
             else:
-                pos = cmds.xform(locs[s], q=1, ws=1, t=1)
+                pos = cmds.xform(vtx[s], q=1, ws=1, t=1)
                 cmds.curve(f"{name}_linear_crv", a=True, p=[pos])
-        cmds.setAttr(f"{name}_crv_grp.visibility", 0)
         cmds.parent(f"{name}_crv_grp", f"{name}_grp")
 
     def createLowCurve(name, ctrlAmount=5):
-        locs = cmds.listRelatives(f"{name}_loc_grp", c=True)
-
         # calculate margin between controller
-        marginBetweenCtrls = (len(locs) - 1) / (ctrlAmount - 1)
+        marginBetweenCtrls = (len(vtx) - 1) / (ctrlAmount - 1)
 
         for s in range(0, ctrlAmount):
             if s == 0:
-                pos = cmds.xform(locs[s], q=1, ws=1, t=1)
+                pos = cmds.xform(vtx[s], q=1, ws=1, t=1)
                 cmds.curve(name=f"{name}_cubic_crv", d=3, p=[pos])
                 shape = cmds.listRelatives(f"{name}_cubic_crv", c=True, shapes=True)
                 cmds.rename(shape, f"{name}_cubic_crv_shape")
                 cmds.parent(f"{name}_cubic_crv", f"{name}_crv_grp")
             else:
                 indexOfCtrl = int(round(marginBetweenCtrls * s, 0))
-                pos = cmds.xform(locs[indexOfCtrl], q=1, ws=1, t=1)
+                pos = cmds.xform(vtx[indexOfCtrl], q=1, ws=1, t=1)
                 cmds.curve(f"{name}_cubic_crv", a=True, p=[pos])
 
-    creatEyeJnts(name, vtx)
-    createConstraints(name)
+    if cmds.checkBox('aimConstraint_checkBox', query=True, v=True):
+        createEyeJnts(name, vtx)
+        createConstraints(name)
+    else:
+        createJnts(name, vtx)
     createLinCurve(name)
     createLowCurve(name)
