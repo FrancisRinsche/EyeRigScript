@@ -2,24 +2,23 @@ import maya.cmds as cmds
 
 
 def createStructure(name, vtx):
-
     # Property of Marco Giordano
     # the following scripts createEyeJnts and createConstraints are taken from his youtube tutorial, and only slightly altered to fit the rest of the script
     def createEyeJnts(name, vtx):
         cmds.group(name=f"{name}_grp", em=True)
         cmds.group(name=f"{name}_jnt_grp", em=True)
-        for i in range(0, len(vtx)):
+        for s in range(0, len(vtx)):
             cmds.select(cl=1)
-            jnt = cmds.joint(name=f"{name}_{i}_tip_BIND_jnt")
-            pos = cmds.xform(vtx[i], q=1, ws=1, t=1)
+            jnt = cmds.joint(name=f"{name}_{s}_tip_BIND_jnt")
+            pos = cmds.xform(vtx[s], q=1, ws=1, t=1)
             cmds.xform(jnt, ws=1, t=pos)
             posC = cmds.xform("center_loc", q=1, ws=1, t=1)
             cmds.select(cl=1)
-            jntC = cmds.joint(name=f"{name}_{i}_jnt")
+            jntC = cmds.joint(name=f"{name}_{s}_jnt")
             cmds.xform(jntC, ws=1, t=posC)
             cmds.parent(jnt, jntC)
             cmds.joint(jntC, e=1, oj="xyz", secondaryAxisOrient="yup", ch=1, zso=1)
-            cmds.parent(f"{name}_{i}_jnt", f"{name}_jnt_grp")
+            cmds.parent(f"{name}_{s}_jnt", f"{name}_jnt_grp")
         cmds.parent(f"{name}_jnt_grp", f"{name}_grp")
 
     def createConstraints(name):
@@ -42,23 +41,16 @@ def createStructure(name, vtx):
     def createJnts(name, vtx):
         cmds.group(name=f"{name}_grp", em=True)
         cmds.group(name=f"{name}_jnt_grp", em=True)
-        for i in range(0, len(vtx)):
+        for s in range(0, len(vtx)):
             cmds.select(cl=1)
-            jnt = cmds.joint(name=f"{name}_{i}_tip_BIND_jnt")
-            pos = cmds.xform(vtx[i], q=1, ws=1, t=1)
+            jnt = cmds.joint(name=f"{name}_{s}_tip_BIND_jnt")
+            pos = cmds.xform(vtx[s], q=1, ws=1, t=1)
             cmds.xform(jnt, ws=1, t=pos)
-            #posC = cmds.xform("center_loc", q=1, ws=1, t=1)
-            #cmds.select(cl=1)
-            #jntC = cmds.joint(name=f"{name}_{i}_jnt")
-            #cmds.xform(jntC, ws=1, t=posC)
-            #cmds.parent(jnt, jntC)
-            #cmds.joint(jntC, e=1, oj="xyz", secondaryAxisOrient="yup", ch=1, zso=1)
-            cmds.parent(f"{name}_{i}_tip_BIND_jnt", f"{name}_jnt_grp")
+            cmds.parent(f"{name}_{s}_tip_BIND_jnt", f"{name}_jnt_grp")
         cmds.parent(f"{name}_jnt_grp", f"{name}_grp")
 
     def createLinCurve(name):
         cmds.group(name=f"{name}_crv_grp", em=True)
-        #locs = cmds.listRelatives(f"{name}_loc_grp", c=True)
         for s in range(0, len(vtx)):
             if s == 0:
                 pos = cmds.xform(vtx[s], q=1, ws=1, t=1)
@@ -72,8 +64,6 @@ def createStructure(name, vtx):
         cmds.parent(f"{name}_crv_grp", f"{name}_grp")
 
     def createLowCurve(name, ctrlAmount=5):
-        # locs = cmds.listRelatives(f"{name}_loc_grp", c=True)
-
         # calculate margin between controller
         marginBetweenCtrls = (len(vtx) - 1) / (ctrlAmount - 1)
 

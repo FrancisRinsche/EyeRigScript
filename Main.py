@@ -1,10 +1,17 @@
+import importlib
+import os
+import sys
+
+import maya.cmds as cmds
+
+from eye import JointToVertex, getUParam, createControls, SmartBlink
+
 sys.path.append('C:/Users/franc/OneDrive/Scripts/RiggingScript/')
 sys.path.append('C:/Users/franc/OneDrive/Scripts/RiggingScript/eye')
 
+#path = path = os.path.abspath(os.curdir)
+#print(f"this is the way!: {path}")
 
-import maya.cmds as cmds
-from eye import JointToVertex, getUParam, createControls, SmartBlink
-import importlib
 
 importlib.reload(JointToVertex)
 importlib.reload(getUParam)
@@ -14,6 +21,7 @@ importlib.reload(SmartBlink)
 upperVerts = []
 lowerVerts = []
 global aimConstraintBool
+
 
 dialog = cmds.loadUI(uiFile='C:/Users/Franc/OneDrive/Scripts/RiggingScript/EyeRigScript.ui', v=True)
 cmds.showWindow(dialog)
@@ -35,16 +43,16 @@ def getLowerVertsList():
 
 
 def runJointToVertex():
-
     aimConstraintBool = cmds.checkBox('aimConstraint_checkBox', query=True, v=True)
 
-    # upperLid
+    # UPPERLID
+    # getting the name input from the UI textfield, only running the functions when there is input
     prefix = cmds.textField('prefixOne_lineEdit', query=True, text=True)
     if prefix != "":
         JointToVertex.createStructure(prefix, upperVerts)
         getUParam.connectLocToCurve(prefix)
 
-    # LowerLid
+    # LOWERLID
     prefixTwo = cmds.textField('prefixTwo_lineEdit', query=True, text=True)
     if prefixTwo != "":
         JointToVertex.createStructure(prefixTwo, lowerVerts)
@@ -53,7 +61,7 @@ def runJointToVertex():
 
 def runWireDeformerScript():
     ctrlAmount = int(cmds.textField("controlAmount_lineEdit", query=True, text=True))
-
+    print(ctrlAmount)
     # upperLid
     prefix = cmds.textField("prefixOne_lineEdit", query=True, text=True)
     createdControls, indexMiddleElement = createControls.createControlElements(prefix, ctrlAmount, upperVerts)
@@ -64,7 +72,7 @@ def runWireDeformerScript():
         prefixTwo = cmds.textField("prefixTwo_lineEdit", query=True, text=True)
         createControls.createControlElements(prefixTwo, ctrlAmount, lowerVerts, createdControls)
 
-        # create SmartBlink BlendShapes if the Box is checked
+        # create SmartBlink BlendShapes if the Box is checked, and if its the second run
         if cmds.checkBox('smartBlink_checkBox', query=True, v=True):
             SmartBlink.createBlendShapes(prefix, prefixTwo, indexMiddleElement)
 
