@@ -51,7 +51,6 @@ def createControlElements(name, ctrlAmount, vtx, previousCreatedCtrls=[]):
         endElement = ctrlList[len(ctrlList) - 1].get("name")
 
         indexOfMiddleListElement = int(round(len(ctrlList) / 2 - 1, 0))
-        print(indexOfMiddleListElement)
         middleElement = ctrlList[indexOfMiddleListElement]["name"]
 
         # separating the controller by halfes to constrain them under the main controller
