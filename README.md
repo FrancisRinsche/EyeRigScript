@@ -20,6 +20,8 @@ Added Functions
 
 # Manual for rigging an eye
 
+A short demo can also be viewed [here](https://youtu.be/ZhpSQit_vho).
+
 <img src="explanation_images/1.PNG" alt="">
 This should be what you see when you start the scipt. 
 
