@@ -1,17 +1,13 @@
 import importlib
-import os
 import sys
+from pathlib import Path
 
 import maya.cmds as cmds
+from EyeRigScript.eye import JointToVertex, getUParam, createControls, SmartBlink
 
-from eye import JointToVertex, getUParam, createControls, SmartBlink
-
-sys.path.append('C:/Users/franc/OneDrive/Scripts/RiggingScript/')
-sys.path.append('C:/Users/franc/OneDrive/Scripts/RiggingScript/eye')
-
-#path = path = os.path.abspath(os.curdir)
-#print(f"this is the way!: {path}")
-
+path = str(Path.home()) + "\maya\scripts"
+sys.path.append(path + "\EyeRigScript")
+sys.path.append(path + "\EyeRigScript\eye")
 
 importlib.reload(JointToVertex)
 importlib.reload(getUParam)
@@ -20,11 +16,11 @@ importlib.reload(SmartBlink)
 
 upperVerts = []
 lowerVerts = []
-global aimConstraintBool
 
 
-dialog = cmds.loadUI(uiFile='C:/Users/Franc/OneDrive/Scripts/RiggingScript/EyeRigScript.ui', v=True)
-cmds.showWindow(dialog)
+def showWindow():
+    dialog = cmds.loadUI(uiFile=path + '\EyeRigScript\EyeRigScript.ui', v=True)
+    cmds.showWindow(dialog)
 
 
 def createMiddleLoc():
@@ -43,7 +39,6 @@ def getLowerVertsList():
 
 
 def runJointToVertex():
-    aimConstraintBool = cmds.checkBox('aimConstraint_checkBox', query=True, v=True)
 
     # UPPERLID
     # getting the name input from the UI textfield, only running the functions when there is input
