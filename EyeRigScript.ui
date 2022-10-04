@@ -43,7 +43,7 @@
      <bool>true</bool>
     </property>
     <property name="+command" stdset="0">
-     <string>&quot;getLowerVertsList()&quot;</string>
+     <string>&quot;eyerig.getLowerVertsList()&quot;</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_10">
@@ -101,7 +101,7 @@
      <bool>true</bool>
     </property>
     <property name="+command" stdset="0">
-     <string>&quot;runJointToVertex()&quot;</string>
+     <string>&quot;eyerig.runJointToVertex()&quot;</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_9">
@@ -159,7 +159,7 @@
      <bool>true</bool>
     </property>
     <property name="+command" stdset="0">
-     <string>&quot;getUpperVertsList()&quot;</string>
+     <string>&quot;eyerig.getUpperVertsList()&quot;</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="prefixTwo_lineEdit">
@@ -188,7 +188,7 @@
      <bool>true</bool>
     </property>
     <property name="+command" stdset="0">
-     <string>&quot;createMiddleLoc()&quot;</string>
+     <string>&quot;eyerig.createMiddleLoc()&quot;</string>
     </property>
    </widget>
    <widget class="QPushButton" name="create_temp_points_6">
@@ -207,7 +207,7 @@
      <bool>true</bool>
     </property>
     <property name="+command" stdset="0">
-     <string>&quot;runWireDeformerScript()&quot;</string>
+     <string>&quot;eyerig.runWireDeformerScript()&quot;</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="prefixOne_lineEdit">
